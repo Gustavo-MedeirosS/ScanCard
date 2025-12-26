@@ -1,14 +1,13 @@
 package com.br.scancard
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.activity.compose.setContent
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
@@ -19,9 +18,8 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import com.br.scancard.databinding.ActivityCameraScanBinding
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -29,17 +27,14 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-class CameraScanActivity : AppCompatActivity() {
+class ScanCardActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCameraScanBinding
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private lateinit var camera: Camera
-    private lateinit var flashlightImageButton: ImageButton
+    private lateinit var previewView: PreviewView
 
     private val timeoutHandler = Handler(Looper.getMainLooper())
     private lateinit var timeoutRunnable: Runnable
-
-    private val CAMERA_PERMISSION_CODE = 1001
 
     private var lastAnalyzedTime = 0L
     private var isFlashlightEnabled: Boolean = false
@@ -54,24 +49,28 @@ class CameraScanActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCameraScanBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
         setContent {
-            ScanCardScreen()
+            ScanCardScreen(
+                isFlashlightEnabled = isFlashlightEnabled,
+                onFlashlightClick = { onFlashlightClick() },
+                onPreviewViewReady = { previewView ->
+                    this.previewView = previewView
+                    startCamera()
+                }
+            )
         }
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
             Log.d("CardScan", "camera permission not granted")
-            ActivityCompat.requestPermissions(
+            setResult(CAMERA_NOT_GRANTED_CODE)
+            Toast.makeText(
                 this,
-                arrayOf(android.Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
-            )
-        } else {
-            Log.d("CardScan", "camera permission granted")
-            startCamera()
+                "Para escanear o cartão é necessário ter acesso à Camera",
+                LENGTH_LONG
+            ).show()
+            finish()
         }
 
         timeoutRunnable = Runnable {
@@ -80,16 +79,14 @@ class CameraScanActivity : AppCompatActivity() {
                 Toast.makeText(
                     this,
                     "Cartão não detectado. Por favor, tente novamente.",
-                    Toast.LENGTH_LONG
+                    LENGTH_LONG
                 ).show()
                 setResult(RESULT_CANCELED)
                 finish()
             }
         }
-        timeoutHandler.postDelayed(timeoutRunnable, 10_000)
 
-//        flashlightImageButton = binding.ibFlashlight
-        flashlightImageButton.setOnClickListener { onFlashlightClick() }
+        timeoutHandler.postDelayed(timeoutRunnable, 10_000)
     }
 
     override fun onRequestPermissionsResult(
@@ -101,8 +98,8 @@ class CameraScanActivity : AppCompatActivity() {
         if (requestCode == CAMERA_PERMISSION_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startCamera()
         } else {
-            setResult(Activity.RESULT_CANCELED)
-            Toast.makeText(this, "Camera permission is not granted", Toast.LENGTH_LONG).show()
+            setResult(RESULT_CANCELED)
+            Toast.makeText(this, "Camera permission is not granted", LENGTH_LONG).show()
             finish()
         }
     }
@@ -118,7 +115,7 @@ class CameraScanActivity : AppCompatActivity() {
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val preview = Preview.Builder().build().also {
-//            it.setSurfaceProvider(binding.previewView.surfaceProvider)
+            it.surfaceProvider = previewView.surfaceProvider
         }
 
         val imageAnalysis = ImageAnalysis.Builder()
@@ -226,18 +223,27 @@ class CameraScanActivity : AppCompatActivity() {
         if (camera.cameraInfo.hasFlashUnit()) {
             if (isFlashlightEnabled) {
                 isFlashlightEnabled = false
-//                flashlightImageButton.setBackgroundResource(R.drawable.flashlight_button_bg_disabled)
-//                flashlightImageButton.setImageResource(R.drawable.flashlight_off)
                 camera.cameraControl.enableTorch(false)
             } else {
                 isFlashlightEnabled = true
-//                flashlightImageButton.setBackgroundResource(R.drawable.flashlight_button_bg_enabled)
-//                flashlightImageButton.setImageResource(R.drawable.flashlight_on)
                 camera.cameraControl.enableTorch(true)
             }
         } else {
             Toast.makeText(this, "A Lanterna não está disponível", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timeoutHandler.removeCallbacks(timeoutRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!::timeoutRunnable.isInitialized) {
+            timeoutRunnable = Runnable { /* ... */ }
+        }
+        timeoutHandler.postDelayed(timeoutRunnable, 10_000)
     }
 
     override fun onDestroy() {
@@ -246,6 +252,8 @@ class CameraScanActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val CAMERA_PERMISSION_CODE = 1001
+        const val CAMERA_NOT_GRANTED_CODE = -1
         const val CARD_NUMBER = "CARD_NUMBER"
         const val CARD_NUMBER_MAX_LENGTH = "CARD_NUMBER_MAX_LENGTH"
         const val CARD_VALIDITY = "CARD_VALIDITY"

@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.br.scancard"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -48,7 +48,7 @@ dependencies {
     implementation("com.google.mlkit:text-recognition:16.0.1")
 
     // CameraX
-    val camerax_version = "1.2.2"
+    val camerax_version = "1.4.2"
     implementation("androidx.camera:camera-core:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")

@@ -128,7 +128,7 @@ object CreditCardHelper {
         end: Int
     ): Boolean {
         if (number.length < nNumbers) return false
-        val firstNumbers = number.substring(0, nNumbers).toIntOrNull() ?: return false
+        val firstNumbers = number.take(nNumbers).toIntOrNull() ?: return false
         return firstNumbers in start..end
     }
 
