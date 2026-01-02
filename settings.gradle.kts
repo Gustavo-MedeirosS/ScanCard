@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ScanCard"
 include(":app")
- 
+include(":scan-card")

@@ -1,5 +1,6 @@
-package com.br.scancard
+package com.br.scan_card
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -60,7 +61,7 @@ class ScanCardActivity : AppCompatActivity() {
             )
         }
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
             Log.d("CardScan", "camera permission not granted")

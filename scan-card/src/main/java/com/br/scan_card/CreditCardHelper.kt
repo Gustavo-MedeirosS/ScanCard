@@ -1,4 +1,4 @@
-package com.br.scancard
+package com.br.scan_card
 
 object CreditCardHelper {
 
