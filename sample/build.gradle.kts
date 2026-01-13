@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.br.scancard"
+    namespace = "com.github.gustavomedeiros.scancard.sample"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.br.scancard"
+        applicationId = "com.github.gustavomedeiros.scancard.sample"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -28,11 +28,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -42,20 +42,10 @@ android {
 }
 
 dependencies {
+    // Reference to Library module
+    implementation(project(":library"))
+
     implementation("androidx.appcompat:appcompat:1.7.1")
-
-    // Google ML Kit
-    implementation("com.google.mlkit:text-recognition:16.0.1")
-
-    // CameraX
-    val camerax_version = "1.4.2"
-    implementation("androidx.camera:camera-core:${camerax_version}")
-    implementation("androidx.camera:camera-camera2:${camerax_version}")
-    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
-    implementation("androidx.camera:camera-video:${camerax_version}")
-
-    implementation("androidx.camera:camera-view:${camerax_version}")
-    implementation("androidx.camera:camera-extensions:${camerax_version}")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

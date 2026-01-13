@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("maven-publish")
 }
 
 android {
-    namespace = "com.br.scancard"
+    namespace = "com.github.gustavomedeiros.scancard"
     compileSdk = 35
 
     defaultConfig {
@@ -25,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -78,9 +79,29 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 from(components["release"])
 
-                groupId = "com.github.gustavo-medeiros"
-                artifactId = "scan-card"
-                version = "1.0.0"
+                groupId = "com.github.Gustavo-MedeirosS"
+                artifactId = "ScanCard"
+                version = System.getenv("VERSION") ?: "1.0.0"
+
+                pom {
+                    name.set("ScanCard")
+                    description.set("Android library for credit card scanning using ML Kit and CameraX")
+                    url.set("https://github.com/Gustavo-MedeirosS/ScanCard")
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id.set("Gustavo-MedeirosS")
+                            name.set("Gustavo Medeiros")
+                        }
+                    }
+                }
             }
         }
     }

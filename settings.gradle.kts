@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ScanCard"
-include(":app")
-include(":scan-card")
+include(":sample")
+include(":library")
