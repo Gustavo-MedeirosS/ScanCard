@@ -24,6 +24,9 @@ dependencies {
 ```
 
 ## Usage
+
+In your Activity/Fragment:
+
 ```kotlin
 private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -49,6 +52,26 @@ private fun handleScanCardResult(data: Intent?) {
         // Here you handle the result
     }
 }
+```
+
+If you don't allow Camera permission in your app and try to scan the card, a message will pop up and you'll need to treat this in `onActivityResult`, something like this:
+```kotlin
+override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+        caller: ComponentCaller
+    ) {
+        super.onActivityResult(requestCode, resultCode, data, caller)
+
+        if (resultCode == ScanCardActivity.CAMERA_NOT_GRANTED_CODE) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.CAMERA),
+                ScanCardActivity.CAMERA_PERMISSION_CODE
+            )
+        }
+    }
 ```
 
 ## Sample App
