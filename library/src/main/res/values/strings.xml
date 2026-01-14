@@ -1,3 +1,7 @@
 <resources>
     <string name="lbl_position_your_card">Position your card in the space below</string>
+    <string name="lbl_flashlight_not_available">The flashlight is not available</string>
+    <string name="lbl_camera_perm_not_granted">Camera permission is not granted</string>
+    <string name="lbl_card_not_detected">Card not detected. Please try again</string>
+    <string name="lbl_camera_permission_warning">To scan the card, you need to allow access to the Camera</string>
 </resources>

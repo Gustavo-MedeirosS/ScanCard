@@ -113,7 +113,7 @@ fun CreditCardView(
                         .padding(end = 20.dp)
                 ) {
                     Text(
-                        text = "Nome",
+                        text = "Name",
                         color = Color.White,
                         fontSize = 14.sp
                     )
@@ -130,7 +130,7 @@ fun CreditCardView(
                     modifier = Modifier.padding(end = 28.dp)
                 ) {
                     Text(
-                        text = "Validade",
+                        text = "Validity",
                         color = Color.White,
                         fontSize = 14.sp
                     )

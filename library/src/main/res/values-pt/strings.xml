@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_position_your_card">Posicione seu cartão no espaço abaixo</string>
+    <string name="lbl_flashlight_not_available">A Lanterna não está disponível</string>
+    <string name="lbl_camera_perm_not_granted">A permissão para Câmera não foi concedida</string>
+    <string name="lbl_card_not_detected">Cartão não detectado. Por favor, tente novamente</string>
+    <string name="lbl_camera_permission_warning">Para escanear o cartão é necessário permitir acesso à Camera</string>
+</resources>

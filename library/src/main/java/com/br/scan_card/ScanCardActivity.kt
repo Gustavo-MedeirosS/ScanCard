@@ -21,6 +21,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import com.github.gustavomedeiros.scancard.R
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -29,6 +30,8 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class ScanCardActivity : AppCompatActivity() {
+
+    private val TAG = "ScanCard"
 
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private lateinit var camera: Camera
@@ -64,11 +67,11 @@ class ScanCardActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("CardScan", "camera permission not granted")
+            Log.i(TAG, "Camera permission not granted")
             setResult(CAMERA_NOT_GRANTED_CODE)
             Toast.makeText(
                 this,
-                "Para escanear o cartão é necessário ter acesso à Camera",
+                R.string.lbl_camera_permission_warning,
                 LENGTH_LONG
             ).show()
             finish()
@@ -76,10 +79,10 @@ class ScanCardActivity : AppCompatActivity() {
 
         timeoutRunnable = Runnable {
             if (numberCard.isNullOrBlank() || validityCard.isNullOrBlank()) {
-                Log.d("CardScan", "Timeout reached without detecting card.")
+                Log.i(TAG, "Timeout reached without detecting card.")
                 Toast.makeText(
                     this,
-                    "Cartão não detectado. Por favor, tente novamente.",
+                    R.string.lbl_card_not_detected,
                     LENGTH_LONG
                 ).show()
                 setResult(RESULT_CANCELED)
@@ -100,7 +103,11 @@ class ScanCardActivity : AppCompatActivity() {
             startCamera()
         } else {
             setResult(RESULT_CANCELED)
-            Toast.makeText(this, "Camera permission is not granted", LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                R.string.lbl_camera_perm_not_granted,
+                LENGTH_LONG
+            ).show()
             finish()
         }
     }
@@ -174,7 +181,7 @@ class ScanCardActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("CardScan", "Error to process image", exception)
+                Log.e(TAG, "Error to process image", exception)
             }
             .addOnCompleteListener {
                 imageProxy.close()
@@ -194,28 +201,28 @@ class ScanCardActivity : AppCompatActivity() {
                 && numberCard.isNullOrBlank()
                 && Regex("""\b(?:\d[ -]*?){13,16}\b""").matches(lineText)
             ) {
-                Log.d("CardScan", "Number card detected: $lineText")
+                Log.i(TAG, "Number card detected: $lineText")
                 numberCard = lineText
                 val cleanedCardNumber = lineText.replace(" ", "").trim()
                 flagCard = CreditCardHelper.getCardFlag(number = cleanedCardNumber)
                 isCardNumberValid = CreditCardHelper.isCardNumberValid(number = cleanedCardNumber)
-                Log.d("CardScan", "Is card number valid: $isCardNumberValid")
+                Log.i(TAG, "Is card number valid? $isCardNumberValid")
             }
 
             // Validity (12/24, 12-24, 12.24)
             if (validityCard.isNullOrBlank() && Regex("""\d{2}[/\-.]\d{2}""").matches(lineText)) {
-                Log.d("CardScan", "Validity card detected: $lineText")
+                Log.i(TAG, "Validity card detected: $lineText")
                 validityCard = lineText
             }
 
             // CVV (3 or 4 digits)
-            val match = Regex("""(?i)(CVV|CVC)[^\d]{0,5}(\d{3,4})""").find(lineText)
+            val match = Regex("""(?i)(CVV|CVC)\D{0,5}(\d{3,4})""").find(lineText)
             if (match != null) {
-                Log.d("CardScan", "CVV card detected: $lineText")
-                cvvCard = match.groupValues[2] // captura apenas os dígitos
+                Log.i(TAG, "CVV card detected: $lineText")
+                cvvCard = match.groupValues[2]
             } else if (Regex("""^\d{3,4}$""").matches(lineText)) {
-                Log.d("CardScan", "CVV card detected: $lineText")
-                cvvCard = lineText // trata caso onde o CVV está isolado
+                Log.i(TAG, "CVV card detected: $lineText")
+                cvvCard = lineText
             }
         }
     }
@@ -230,7 +237,11 @@ class ScanCardActivity : AppCompatActivity() {
                 camera.cameraControl.enableTorch(true)
             }
         } else {
-            Toast.makeText(this, "A Lanterna não está disponível", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                R.string.lbl_flashlight_not_available,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
