@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -26,9 +27,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun MainScreen(onClick: () -> Unit) {
+    val viewModel: MainViewModel = viewModel()
+
+    val cardNumber by viewModel.cardNumber.collectAsStateWithLifecycle()
+    val cardNumberMaxLength by viewModel.cardNumberMaxLength.collectAsStateWithLifecycle()
+    val cardValidity by viewModel.cardValidity.collectAsStateWithLifecycle()
+    val cardCvv by viewModel.cardCvv.collectAsStateWithLifecycle()
+    val cardCvvLength by viewModel.cardCvvLength.collectAsStateWithLifecycle()
+    val isNumberCardValid by viewModel.isNumberCardValid.collectAsStateWithLifecycle()
+    val cardFlagResId by viewModel.cardFlagResId.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.systemBars)
@@ -36,7 +49,12 @@ fun MainScreen(onClick: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        CreditCardView()
+        CreditCardView(
+            cardNumber = cardNumber,
+            expiryDate = cardValidity,
+            cvv = cardCvv,
+            flagResId = cardFlagResId,
+        )
 
         Button(
             onClick = onClick,
@@ -56,10 +74,10 @@ fun MainScreen(onClick: () -> Unit) {
 
 @Composable
 fun CreditCardView(
-    cardNumber: String = "1111 2222 3333 4444",
-    cardholderName: String = "MARIA SILVA",
-    expiryDate: String = "07/30",
-    cvv: String = "123",
+    cardNumber: String? = "1111 2222 3333 4444",
+    cardholderName: String = "GUSTAVO M SILVA",
+    expiryDate: String? = "07/30",
+    cvv: String? = "123",
     flagResId: Int? = null
 ) {
     Box(
@@ -95,7 +113,7 @@ fun CreditCardView(
 
             // Card Number
             Text(
-                text = cardNumber,
+                text = cardNumber ?: "XXXX XXXX XXXX XXXX",
                 color = Color.White,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -135,7 +153,7 @@ fun CreditCardView(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = expiryDate,
+                        text = expiryDate ?: "MM/YY",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -150,7 +168,7 @@ fun CreditCardView(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = cvv,
+                        text = cvv ?: "XXX",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

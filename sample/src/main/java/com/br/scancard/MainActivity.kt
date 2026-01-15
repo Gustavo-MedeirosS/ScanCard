@@ -5,32 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import com.br.scan_card.ScanCardActivity
 import com.br.scancard.ui.theme.ScanCardTheme
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-
-    var cardNumber = ""
-    var cardNumberMaxLength = 16
-    var cardValidity = ""
-    var cardCvv = ""
-    var cardCvvLength = 4
-    var isNumberCardValid = false
-
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        viewModel = ViewModelProvider(owner = this)[MainViewModel::class.java]
+
+        // Compose
         setContent {
-            ScanCardTheme {
-                MainScreen(onClick = { scanCard() })
-            }
+            ScanCardTheme { MainScreen(onClick = { scanCard() }) }
         }
 
         activityResultLauncher = registerForActivityResult(
@@ -49,12 +43,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleScanCardResult(data: Intent?) {
         if (data != null) {
-            cardNumber = data.getStringExtra(ScanCardActivity.CARD_NUMBER) ?: ""
-            cardNumberMaxLength = data.getIntExtra(ScanCardActivity.CARD_NUMBER_MAX_LENGTH, 0)
-            cardValidity = data.getStringExtra(ScanCardActivity.CARD_VALIDITY) ?: ""
-            cardCvv = data.getStringExtra(ScanCardActivity.CARD_CVV) ?: ""
-            cardCvvLength = data.getIntExtra(ScanCardActivity.CARD_CVV_LENGTH, 0)
-            isNumberCardValid = data.getBooleanExtra(ScanCardActivity.CARD_NUMBER_MAX_LENGTH, false)
+            viewModel.updateCardInfo(data)
         }
     }
 
