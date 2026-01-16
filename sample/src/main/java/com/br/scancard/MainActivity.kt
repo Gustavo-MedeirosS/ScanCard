@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import com.br.scan_card.CreditCardData
 import com.br.scan_card.ScanCardActivity
 import com.br.scancard.ui.theme.ScanCardTheme
 
@@ -30,8 +31,12 @@ class MainActivity : ComponentActivity() {
         activityResultLauncher = registerForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == RESULT_OK) {
-                handleScanCardResult(data = result.data)
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val cardData = result.data?.getParcelableExtra(
+                    ScanCardActivity.CREDIT_CARD_DATA,
+                    CreditCardData::class.java
+                )
+                viewModel.updateCardInfo(cardData)
             }
         }
     }
@@ -39,12 +44,6 @@ class MainActivity : ComponentActivity() {
     private fun scanCard() {
         val intent = Intent(this, ScanCardActivity::class.java)
         activityResultLauncher.launch(intent)
-    }
-
-    private fun handleScanCardResult(data: Intent?) {
-        if (data != null) {
-            viewModel.updateCardInfo(data)
-        }
     }
 
     override fun onActivityResult(

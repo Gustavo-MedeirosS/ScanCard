@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,14 +31,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.gustavomedeiros.scancard.R
 
 @Composable
-fun ScanCardScreen(
-    isFlashlightEnabled: Boolean,
+internal fun ScanCardScreen(
     onFlashlightClick: (Boolean) -> Unit,
     onPreviewViewReady: (PreviewView) -> Unit
 ) {
+    val viewModel: ScanCardViewModel = viewModel()
+
+    val isFlashlightEnabled by viewModel.isFlashlightEnabled.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -89,7 +95,7 @@ fun ScanCardScreen(
 }
 
 @Composable
-fun CameraContent(onPreviewViewReady: (PreviewView) -> Unit) {
+private fun CameraContent(onPreviewViewReady: (PreviewView) -> Unit) {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->

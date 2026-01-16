@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.parcelize")
     id("maven-publish")
 }
 
@@ -39,6 +40,10 @@ android {
 }
 
 dependencies {
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+
     // Google ML Kit
     implementation("com.google.mlkit:text-recognition:16.0.1")
 

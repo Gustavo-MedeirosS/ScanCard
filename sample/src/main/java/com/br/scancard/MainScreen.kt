@@ -29,17 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.br.scan_card.CreditCardData
 
 @Composable
 fun MainScreen(onClick: () -> Unit) {
     val viewModel: MainViewModel = viewModel()
 
-    val cardNumber by viewModel.cardNumber.collectAsStateWithLifecycle()
-    val cardNumberMaxLength by viewModel.cardNumberMaxLength.collectAsStateWithLifecycle()
-    val cardValidity by viewModel.cardValidity.collectAsStateWithLifecycle()
-    val cardCvv by viewModel.cardCvv.collectAsStateWithLifecycle()
-    val cardCvvLength by viewModel.cardCvvLength.collectAsStateWithLifecycle()
-    val isNumberCardValid by viewModel.isNumberCardValid.collectAsStateWithLifecycle()
+    val cardData by viewModel.cardData.collectAsStateWithLifecycle()
     val cardFlagResId by viewModel.cardFlagResId.collectAsStateWithLifecycle()
 
     Column(
@@ -50,9 +46,7 @@ fun MainScreen(onClick: () -> Unit) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         CreditCardView(
-            cardNumber = cardNumber,
-            expiryDate = cardValidity,
-            cvv = cardCvv,
+            cardData = cardData,
             flagResId = cardFlagResId,
         )
 
@@ -74,10 +68,8 @@ fun MainScreen(onClick: () -> Unit) {
 
 @Composable
 fun CreditCardView(
-    cardNumber: String? = "1111 2222 3333 4444",
+    cardData: CreditCardData?,
     cardholderName: String = "GUSTAVO M SILVA",
-    expiryDate: String? = "07/30",
-    cvv: String? = "123",
     flagResId: Int? = null
 ) {
     Box(
@@ -113,7 +105,7 @@ fun CreditCardView(
 
             // Card Number
             Text(
-                text = cardNumber ?: "XXXX XXXX XXXX XXXX",
+                text = cardData?.number ?: "XXXX XXXX XXXX XXXX",
                 color = Color.White,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -153,7 +145,7 @@ fun CreditCardView(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = expiryDate ?: "MM/YY",
+                        text = cardData?.validity ?: "MM/YY",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -168,7 +160,7 @@ fun CreditCardView(
                         fontSize = 14.sp
                     )
                     Text(
-                        text = cvv ?: "XXX",
+                        text = cardData?.cvv ?: "XXX",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

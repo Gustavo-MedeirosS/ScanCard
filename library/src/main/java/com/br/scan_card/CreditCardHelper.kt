@@ -2,6 +2,7 @@ package com.br.scan_card
 
 object CreditCardHelper {
 
+    // Card Flags
     const val MASTERCARD = "Mastercard"
     const val VISA = "Visa"
     const val ELO = "Elo"
