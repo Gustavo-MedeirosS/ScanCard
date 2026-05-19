@@ -17,13 +17,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.br.scan_card.theme.CardBorder
 import com.github.gustavomedeiros.scancard.R
 
 @Composable
@@ -47,7 +48,7 @@ internal fun ScanCardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.background)
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
@@ -56,7 +57,7 @@ internal fun ScanCardScreen(
             text = stringResource(id = R.string.lbl_position_your_card),
             style = TextStyle(
                 fontSize = 20.sp,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
         )
@@ -67,7 +68,7 @@ internal fun ScanCardScreen(
                 .height(240.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .border(
-                    color = Color(0xFF53E952),
+                    color = CardBorder,
                     width = 4.dp,
                     shape = RoundedCornerShape(size = 8.dp)
                 )
@@ -79,7 +80,7 @@ internal fun ScanCardScreen(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.surface),
             onClick = { onFlashlightClick(!isFlashlightEnabled) },
         ) {
             Icon(
@@ -88,7 +89,7 @@ internal fun ScanCardScreen(
                     else R.drawable.flashlight_on
                 ),
                 contentDescription = "Flashlight",
-                tint = Color.Black
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
     }

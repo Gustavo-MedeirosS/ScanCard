@@ -96,7 +96,7 @@ fun CreditCardView(
                     painter = painterResource(id = flagResId),
                     contentDescription = "Card flag",
                     modifier = Modifier
-                        .height(24.dp)
+                        .height(44.dp)
                         .padding(bottom = 20.dp)
                 )
             } else {

@@ -23,6 +23,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.br.scan_card.theme.ScanCardTheme
 import com.github.gustavomedeiros.scancard.R
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.common.InputImage
@@ -49,13 +50,15 @@ class ScanCardActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(owner = this)[ScanCardViewModel::class.java]
 
         setContent {
-            ScanCardScreen(
-                onFlashlightClick = { onFlashlightClick() },
-                onPreviewViewReady = { previewView ->
-                    this.previewView = previewView
-                    startCamera()
-                }
-            )
+            ScanCardTheme {
+                ScanCardScreen(
+                    onFlashlightClick = { onFlashlightClick() },
+                    onPreviewViewReady = { previewView ->
+                        this.previewView = previewView
+                        startCamera()
+                    }
+                )
+            }
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
