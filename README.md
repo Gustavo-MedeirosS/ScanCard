@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 Add the dependency:
 ```gradle
 dependencies {
-    implementation 'com.github.Gustavo-MedeirosS:ScanCard:1.0.0'
+    implementation 'com.github.Gustavo-MedeirosS:ScanCard:1.1.0'
 }
 ```
 

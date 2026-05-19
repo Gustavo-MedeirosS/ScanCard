@@ -86,7 +86,7 @@ afterEvaluate {
 
                 groupId = "com.github.Gustavo-MedeirosS"
                 artifactId = "ScanCard"
-                version = System.getenv("VERSION") ?: "1.0.0"
+                version = System.getenv("VERSION") ?: "1.1.0"
 
                 pom {
                     name.set("ScanCard")
