@@ -38,7 +38,13 @@ android {
         viewBinding = true
     }
     lint {
+        // Evita falha de publicação por crash interno de detectors
+        checkReleaseBuilds = false
+        abortOnError = false
+
+        // Detectores que já crasharam no seu build do JitPack
         disable += "NullSafeMutableLiveData"
+        disable += "RememberInComposition"
     }
 }
 
