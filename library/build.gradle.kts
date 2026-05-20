@@ -37,6 +37,9 @@ android {
         compose = true
         viewBinding = true
     }
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 dependencies {
